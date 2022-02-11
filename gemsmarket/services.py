@@ -2,6 +2,8 @@ import csv
 import io
 import datetime
 
+from django.utils.timezone import make_aware
+
 from .models import Customer, Deals
 
 
@@ -28,13 +30,15 @@ def import_deals(file):
         customer.save(force_insert=True)
         customers_objects.update({f"{row}": customer})
 
-    for row in reader:
+    deals_io_string = io.StringIO(decoded_file)
+    deals_reader = csv.DictReader(deals_io_string)
+    for row in deals_reader:
         deal = Deals(
             customer=customers_objects[row['customer']],
             item=row['item'],
             total=int(row['total']),
             quantity=int(row['quantity']),
-            date=datetime.datetime.strptime(row['date'], '%Y-%m-%d %H:%M:%S.%f')
+            date=make_aware(datetime.datetime.strptime(row['date'], '%Y-%m-%d %H:%M:%S.%f'))
         )
         deal.save(force_insert=True)
 
