@@ -23,4 +23,5 @@ class CustomerDealsAPIView(views.APIView):
             data = import_deals(file)
             return Response(data=data, status=200)
         else:
-            data = {'Status': 'Error', 'Desc': serializer.errors}
+            data = {'Status': 'Error', 'Desc': serializer.errors['file']}
+            return Response(data=data, status=400)
