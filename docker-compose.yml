@@ -1,0 +1,21 @@
+version: "3.3"
+
+services:
+  db:
+    image: postgres:14.2
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  server:
+    build: .
+    command: bash -c "while !</dev/tcp/db/5432; do sleep 1; done; python manage.py makemigrations 
+             && python manage.py migrate 
+             && gunicorn SibdevDRFTest.wsgi -c ./SibdevDRFTest/gunicorn.py"
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
