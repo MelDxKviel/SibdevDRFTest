@@ -8,6 +8,12 @@ from .models import Customer, Deals
 
 
 def import_deals(file):
+    """
+    Загружает сделки из переданного файла в базу данных и создает покупателей
+
+    :param file: загруженный csv-файл со сделками
+    :return: Status
+    """
     decoded_file = file.read().decode('utf-8')
     io_string = io.StringIO(decoded_file)
     reader = csv.DictReader(io_string)

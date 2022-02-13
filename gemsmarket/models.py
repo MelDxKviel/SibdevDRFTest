@@ -9,7 +9,14 @@ class Customer(models.Model):
         verbose_name = 'Покупатель'
         ordering = ['-spent_money']
 
-    def load_gems_list(self):
+    def load_gems_list(self) -> set:
+        """
+        Возвращает список из камней, принадлежащих покупателю,
+        которые купили как минимум двое из списка "5 клиентов,
+        потративших наибольшую сумму за весь период".
+
+        :return: Список драгоценных камней
+        """
         customers = Customer.objects.all().exclude(username=self.username)[:4]
         deals_filter = Deals.objects.filter(customer__in=customers).values_list('item', flat=True)
         gems = set(self.deals.filter(item__in=deals_filter).values_list('item', flat=True))
